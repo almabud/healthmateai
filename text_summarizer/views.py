@@ -29,7 +29,7 @@ class ListPatientSummarizeAPIView(ListAPIView):
 
     def get_queryset(self):
         return SummarizeRequest.objects.filter(
-            patient__id=self.kwargs.get('id')
+            patient__id=self.kwargs.get('patient_id')
         )
 
 
