@@ -15,7 +15,25 @@ class TextSummarizerSerializer(serializers.ModelSerializer):
     class Meta:
         model = SummarizeRequest
         fields = (
-            'conversation', 'summarize', 'created_at', 'updated_at', 'patient'
+            'id',
+            'conversation',
+            'summarize',
+            'created_at',
+            'updated_at',
+            'patient'
+        )
+        read_only_fields = fields
+
+
+class PatientTextSummarizeSerializer(TextSummarizerSerializer):
+    class Meta:
+        model = SummarizeRequest
+        fields = (
+            'id',
+            'conversation',
+            'summarize',
+            'created_at',
+            'updated_at'
         )
         read_only_fields = fields
 

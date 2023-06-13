@@ -9,5 +9,10 @@ urlpatterns = [
         'summarizes/',
         views.ListCreateSummarizeAPIView.as_view(),
         name='list_create_summarize_view'
+    ),
+    path(
+        'summarizes/<int:patient>/',
+        views.ListPatientSummarizeAPIView.as_view(),
+        name='list_patient_summarize_view'
     )
 ]

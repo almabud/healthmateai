@@ -1,9 +1,12 @@
 from rest_framework.permissions import AllowAny
 
-from healthmateai.util.generic_views import CreateAPIView, ListCreateAPIView
+from healthmateai.util.generic_views import (
+    CreateAPIView, ListCreateAPIView, ListAPIView
+)
 from text_summarizer.models import SummarizeRequest
 from text_summarizer.serializers import (
-    CreateTextSummarizerSerializer, TextSummarizerSerializer
+    CreateTextSummarizerSerializer, TextSummarizerSerializer,
+    PatientTextSummarizeSerializer
 )
 
 
@@ -19,6 +22,15 @@ class ListCreateSummarizeAPIView(ListCreateAPIView):
 
     def get_queryset(self):
         return SummarizeRequest.objects.all()
+
+
+class ListPatientSummarizeAPIView(ListAPIView):
+    serializer_classes = PatientTextSummarizeSerializer
+
+    def get_queryset(self):
+        return SummarizeRequest.objects.filter(
+            patient__id=self.kwargs.get('id')
+        )
 
 
 
