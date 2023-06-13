@@ -39,7 +39,7 @@ class PatientTextSummarizeSerializer(TextSummarizerSerializer):
 
 
 class CreateTextSummarizerSerializer(serializers.ModelSerializer):
-    patient = serializers.IntegerField()
+    patient = serializers.IntegerField(write_only=True)
 
     class Meta:
         model = SummarizeRequest
@@ -77,6 +77,7 @@ class CreateTextSummarizerSerializer(serializers.ModelSerializer):
 
         if response and response.choices:
             validated_data['summarize'] = response.choices[0].message['content']
+            patient = super().create(validated_data)
 
             return super().create(validated_data)
         else:
