@@ -11,5 +11,5 @@ RUN python manage.py migrate
 EXPOSE 8000/tcp
 
 # Set the command to run your Django app
-CMD ["gunicorn", "your_project_name.wsgi:application", "--bind", "0.0.0.0:$PORT"]
+CMD ["gunicorn", "healthmateai.wsgi:application", "--bind", "0.0.0.0:8000"]
 
