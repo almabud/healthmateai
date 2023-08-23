@@ -1,0 +1,12 @@
+# render.yml
+
+services:
+  - name: web
+    buildCommand: |
+      pip install -r requirements.txt
+      python manage.py collectstatic --noinput
+    startCommand: gunicorn healthmateai.wsgi:application --bind 0.0.0.0:$PORT
+    healthCheckPath: /your-health-check-url/
+    envVarsFile: .env
+    envVars:
+      DJANGO_SETTINGS_MODULE: healthmateai.settings

@@ -25,6 +25,7 @@ class ListCreateSummarizeAPIView(ListCreateAPIView):
 
 
 class ListPatientSummarizeAPIView(ListAPIView):
+    permission_classes = (AllowAny,)
     serializer_classes = PatientTextSummarizeSerializer
 
     def get_queryset(self):

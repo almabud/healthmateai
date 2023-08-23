@@ -54,9 +54,6 @@ class CreateTextSummarizerSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         convs = validated_data['conversation']
         messages = [
-            {'role': msg['speaker'], 'content': msg['message']} for msg in convs
-        ]
-        messages = [
             {
                 'role': 'system',
                 'content': "You are a doctor's assistant. List down only the "
@@ -77,7 +74,6 @@ class CreateTextSummarizerSerializer(serializers.ModelSerializer):
 
         if response and response.choices:
             validated_data['summarize'] = response.choices[0].message['content']
-            patient = super().create(validated_data)
 
             return super().create(validated_data)
         else:
