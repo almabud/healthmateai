@@ -7,6 +7,7 @@ ENV HOME /webapp
 COPY . /webapp
 
 RUN python manage.py migrate
+RUN python manage.py collectstatic
 
 EXPOSE 8000/tcp
 
