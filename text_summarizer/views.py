@@ -21,7 +21,7 @@ class ListCreateSummarizeAPIView(ListCreateAPIView):
     }
 
     def get_queryset(self):
-        return SummarizeRequest.objects.all()
+        return SummarizeRequest.objects.all().order_by('-created_at')
 
 
 class ListPatientSummarizeAPIView(ListAPIView):

@@ -51,30 +51,46 @@ class CreateTextSummarizerSerializer(serializers.ModelSerializer):
         except Patient.DoesNotExist:
             raise ValidationError('Invalid patient.')
 
+    def _chat_gpt_api_call(self, messages, count=0):
+        try:
+            response = openai.ChatCompletion.create(
+                model='gpt-3.5-turbo',
+                messages=messages,
+                max_tokens=100,
+                temperature=0.7
+            )
+            if response and response.choices:
+                return response
+            else:
+                raise ValidationError('Error occurred during API request.')
+        except Exception as e:
+            if count < 3:
+                return self._chat_gpt_api_call(messages, count+1)
+            raise e
+
     def create(self, validated_data):
-        convs = validated_data['conversation']
-        messages = [
-            {
-                'role': 'system',
-                'content': "You are a doctor's assistant. List down only the "
-                           "patient's problems and any suggested tests "
-                           "by the doctor. Moreover ignore the medication."
-            },
-            {
-                'role': 'user',
-                'content': json.dumps(convs)
-            }
-        ]
-        response = openai.ChatCompletion.create(
-            model='gpt-3.5-turbo',
-            messages=messages,
-            max_tokens=100,
-            temperature=0.7
-        )
+        try:
+            convs = validated_data['conversation']
+            messages = [
+                {
+                    'role': 'system',
+                    'content': "You are a doctor's assistant. List down only the "
+                               "patient's problems and any suggested tests "
+                               "by the doctor. Moreover ignore the medication. "
+                               "Please provide the the response in html format"
+                },
+                {
+                    'role': 'user',
+                    'content': json.dumps(convs)
+                }
+            ]
+            response = self._chat_gpt_api_call(messages)
 
-        if response and response.choices:
-            validated_data['summarize'] = response.choices[0].message['content']
+            if response and response.choices:
+                validated_data['summarize'] = response.choices[0].message['content']
 
-            return super().create(validated_data)
-        else:
-            raise ValidationError('Error occurred during API request.')
+                return super().create(validated_data)
+            else:
+                raise ValidationError('Error occurred during API request.')
+        except ValidationError as e:
+            raise e
